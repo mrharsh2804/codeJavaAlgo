@@ -1,0 +1,55 @@
+/**
+Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
+*/
+
+class Solution {
+    public int numSquares(int n) {
+        /**
+        create a list of perfect squares. initiate a boolean array(n) with true where its a perfect square.
+        put perfect squares in queue and start BFS over it.
+        for each, count++
+        for each q.peek(); got through all total = perfect_squares+q.peek() and if total is < n, and its the first time we get that sum, add to queue and make note in boolean array (this says- you have been here before. don't bother processing this combo again). 
+        if total > n, break;
+        if total == n return count;
+        */
+        
+        List<Integer> l = new LinkedList<>();
+        boolean[] trackProcessed = new boolean[n];
+        int k = 1;
+        while(k*k<=n)
+        {
+            l.add(k*k);
+            trackProcessed[(k*k)-1] = true;
+            k++;
+        }
+        if((k-1)*(k-1) == n) return 1;
+        Queue<Integer> q = new LinkedList<>(l);
+        int count =1;
+        while(!q.isEmpty())
+        {
+            int size = q.size();
+            count++;
+            for(int i=0; i<size; i++)
+            {
+                int tmp = q.poll();
+                
+                for(int j : l)
+                {
+                    if(j+tmp == n)
+                        return count;
+                    else if(j+tmp < n && !trackProcessed[(j+tmp)-1])
+                    {
+                        q.add(j+tmp);
+                        trackProcessed[(j+tmp)-1] = true;
+                    }
+                    else if(tmp+j > n)
+                    {
+                        break;
+                    }
+                }
+            }
+            
+        }
+        return 0;
+    }
+}
