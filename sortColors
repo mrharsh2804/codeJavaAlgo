@@ -1,0 +1,45 @@
+/** 
+75. Sort Colors
+Given an array with n objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white and blue.
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+*/
+
+
+class Solution {
+    public void sortColors(int[] nums) {
+        // count the number of 0, 1, 2 and create the array
+        /*int n0 = 0, n1 = 0, n2 = 0;
+        for(int i:nums)
+        {
+            switch(i)
+            {
+                case 0: n0++; break;
+                case 1: n1++; break;
+                case 2: n2++; break;
+            }
+        }
+        int i=0;
+        while(i<n0) nums[i++]=0;
+        while(i<n1+n0) nums[i++]=1;
+        while(i<n2+n1+n0) nums[i++]=2;
+        */
+        
+        /** to make it scalable, put the count in a bucket (can use arraylist if we don't know the number of colors). use this to access the count of each element when creating the array again from scratch.
+        */
+        int MAX = 3;
+        int[] bucket = new int[MAX];
+        for(int i:nums)
+        {
+            bucket[i]++;
+        }
+        int k = 0;
+        for(int i=0; i<bucket.length; i++)
+        {
+            for(int j=0; j<bucket[i]; j++)
+            {
+                nums[k++] = i; 
+            }
+        }
+    }
+}
