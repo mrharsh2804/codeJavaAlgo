@@ -1,0 +1,50 @@
+/**
+17. Letter Combinations of a Phone Number
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent.
+Input: "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+*/
+
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        if(digits == null || digits.length() == 0) return new ArrayList<>();
+        HashMap<Character, String> map = new HashMap<>();
+        map.put('1',"");
+        map.put('2',"abc");
+        map.put('3',"def");
+        map.put('4',"ghi");
+        map.put('5',"jkl");
+        map.put('6',"mno");
+        map.put('7',"pqrs");
+        map.put('8',"tuv");
+        map.put('9',"wxyz");
+        
+        List<String> s = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        for(char c:digits.toCharArray())
+        {
+            s.add(map.get(c));
+        }
+        
+        helper(0, s, new StringBuilder(), res, digits);
+        return res;
+    }
+    
+    private void helper(int k, List<String> s, StringBuilder temp, List<String> res, String digits)
+    {
+        if(temp.length() == digits.length()) 
+        {
+            res.add(temp.toString());
+            temp = new StringBuilder();
+            return;
+        }
+        //if(k >= s.size()) return;
+        String cur = s.get(k);
+        for(int i=0; i<cur.length(); i++)
+        {
+            temp.append(cur.charAt(i));
+            helper(k+1, s, temp, res, digits);
+            temp.deleteCharAt(temp.length()-1);
+        }
+    }
+}
