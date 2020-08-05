@@ -1,0 +1,23 @@
+/**
+Is the input integer a power of 4?: Easy
+Ans: An int is power of 4 if:
+  1. Its a power of 2, i.e. n & (n-1) == 0, i.e. there is only one 1 in its binary form. (i.e. 10, 100, 1000, 10000, 100000) AND
+  2. There are even number of zeros in its binary form before the only 1. (i.e. 10000, 1000000, etc.)
+*/
+
+class Solution {
+    public boolean isPowerOfFour(int n) {
+        int count = 0;
+        int x = n & (n-1);
+        if(n>0 && x==0)
+        {
+            while(n>1)
+            {
+                n >>= 1;
+                count++;
+            }
+            return count%2==0 ? true:false;
+        }
+        return false;
+    }
+}
