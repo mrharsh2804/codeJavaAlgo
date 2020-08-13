@@ -1,0 +1,71 @@
+/**
+207. Course schedule: medium
+
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
+
+Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+
+Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+
+ 
+
+Example 1:
+
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: There are a total of 2 courses to take. 
+             To take course 1 you should have finished course 0. So it is possible.
+Example 2:
+
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: There are a total of 2 courses to take. 
+             To take course 1 you should have finished course 0, and to take course 0 you should
+             also have finished course 1. So it is impossible.
+*/
+
+class Solution {
+    int tc;
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        if(prerequisites == null || prerequisites.length == 0) return true;
+        
+        tc = numCourses;
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        for(int[] sub : prerequisites)
+        {
+            if(!map.containsKey(sub[0]))
+                map.put(sub[0], new ArrayList<>());
+            map.get(sub[0]).add(sub[1]);
+        }
+        
+        HashSet<Integer> visited = new HashSet<>();
+        HashSet<Integer> done = new HashSet<>();
+        
+        for(int i=0;i<numCourses; i++)
+        {
+            if(!helper(map, visited, done, i))
+                return false;
+        }
+        return true;
+    }
+    
+    public boolean helper(HashMap<Integer, List<Integer>> map, HashSet<Integer> visited, HashSet<Integer> done, int key)
+    {
+        if(visited.contains(key)) return false;
+        if(done.contains(key)) return true;
+        if(map.containsKey(key))
+        {
+            visited.add(key);
+            List<Integer> l = map.get(key);
+            for(int i=0; i<l.size(); i++)
+            {
+                if(!helper(map, visited, done, l.get(i)))
+                    return false;
+            }
+            done.add(key);
+            visited.remove(key);
+        }
+        else done.add(key);
+        return true;
+    }
+}
