@@ -1,0 +1,77 @@
+/*
+Maximal Square : Medium
+Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+
+Example:
+
+Input: 
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+
+Output: 4
+*/
+
+class Solution {
+    public int maximalSquare(char[][] matrix) {
+        if(matrix.length == 0) return 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][]dp = new int[m][n];
+        int max = 0;
+        
+        for(int i=0; i<m; i++)
+        {
+            for(int j=0; j<n; j++)
+            {
+                if(i==0 || j == 0 || matrix[i][j] == '0') dp[i][j] = matrix[i][j] - '0';
+                else
+                {
+                    dp[i][j] = Math.min(dp[i-1][j], Math.min(dp[i-1][j-1], dp[i][j-1]))+1;
+                }
+                max = Math.max(dp[i][j],max);
+                //System.out.println(Arrays.toString(dp[i]));
+            }
+            //System.out.println("");
+        }
+        
+        return max*max;
+    }
+}
+
+/*
+
+******* Replacing dp with cur and pre because we actually only use ith row and i-1th row.******
+
+class Solution {
+    public int maximalSquare(char[][] matrix) {
+        if(matrix.length == 0) return 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] pre = new int[n];
+        int[] cur = new int[n];
+        int max = 0;
+        
+        for(int i=0; i<m; i++)
+        {
+            for(int j=0; j<n; j++)
+            {
+                if(i==0 || j == 0 || matrix[i][j] == '0')
+                {
+                    cur[j] = matrix[i][j] - '0';
+                }
+                else
+                {
+                    cur[j] = Math.min(pre[j], Math.min(pre[j-1], cur[j-1]))+1;
+                }
+                max = Math.max(cur[j],max);
+            }
+            pre = cur.clone();
+        }
+        
+        return max*max;
+    }
+}
+*/
