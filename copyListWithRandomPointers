@@ -1,0 +1,63 @@
+/**
+138. Copy List with Random Pointer: Medium
+A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+*/
+Return a deep copy of the list.
+
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node next;
+    public Node random;
+
+    public Node() {}
+
+    public Node(int _val,Node _next,Node _random) {
+        val = _val;
+        next = _next;
+        random = _random;
+    }
+};
+*/
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head == null) return head;
+        Node h = head;
+        
+        //create copy nodes, copy.next -> original.next, original.next -> copy
+        while(h != null)
+        {
+            Node next = h.next;
+            Node copy = new Node(h.val);
+            copy.next = h.next;
+            h.next = copy;      
+            h=next;
+        }
+        
+        //create random links in copy
+        h = head;
+        while(h!=null)
+        {
+            if(h.random != null)
+                h.next.random = h.random.next;
+            h= h.next.next;
+        }
+        
+        //restore original and copy
+        h = head;
+        Node copyHead = h.next;
+        Node copy = h.next; 
+        while(copy.next !=null)        
+        {
+            //restore original links
+            h.next = copy.next;
+            h = h.next;
+            //create copy links
+            copy.next = copy.next.next;
+            copy = copy.next;
+        }
+        h.next =  h.next.next;
+        return copyHead;
+    }
+}
