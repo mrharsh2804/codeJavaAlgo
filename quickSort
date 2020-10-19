@@ -1,0 +1,42 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    public static void main(String[] args) {
+        int[] arr = new int[]{10,2,12,3,5,4,1};
+        quickSort(arr, 0 , arr.length-1);
+        System.out.println(Arrays.toString(arr));
+    }
+    
+    private static void quickSort(int[] A, int l, int h)
+    {
+        if(l<h){
+            int p = partition(A, l, h);
+            quickSort(A,l,p-1);
+            quickSort(A, p+1, h);
+        }    
+    }
+    
+    private static int partition(int[] A, int l, int h)
+    {
+        int piv = A[h];
+        int i = l-1;
+        for(int j=l; j<h; j++)
+        {
+            if(A[j] <= piv)
+            {
+                i++;
+                swap(A,i,j);
+            }
+        }
+        swap(A,i+1,h);
+        return i+1;
+    }
+    
+    private static void swap(int[] A, int i, int j)
+    {
+        if(i==j) return;
+        int temp = A[i];
+        A[i] = A[j];
+        A[j] = temp;
+    }
+        
+}
