@@ -22,7 +22,7 @@ public class Main {
     private static int partition(int[] A, int l, int h)
     {
         int i = l-1;
-        int p = A[h];
+        int p = A[Math.max(l,Math.min(new Random().nextInt(h-l)+l,h-1))];
         for(int j=l; j<h; j++)
         {
             if(A[j]<=p)
