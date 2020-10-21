@@ -1,0 +1,16 @@
+public boolean printInorderItr(TreeNode root) 
+{
+    Stack<TreeNode> st = new Stack<>();
+    while(!st.isEmpty() || root!=null)
+    {
+        while(root!=null)
+        {
+            st.push(root);
+            root = root.left;
+        }
+        root = st.pop();
+        System.out.print(root.val +" ");
+        root = root.right;
+    }
+    return true;
+}
