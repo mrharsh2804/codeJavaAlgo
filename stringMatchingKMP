@@ -50,7 +50,7 @@ public class Main {
             {
                 i++; j++;
             }
-            if(j==p.length) return i-p.length+1;
+            if(j==p.length) return i-p.length+1; //j = kmpTrans[j-1]; to find further matches.
             else if(i<s.length && s[i]!=p[j])
             {
                 if(len>0)
@@ -61,7 +61,7 @@ public class Main {
         }
         return -1;
     }
-    
+    //for finite automaton string matching
     private static int[][] buildingAutomaton(String p)
     {
         int state = 0;
