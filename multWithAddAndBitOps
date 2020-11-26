@@ -1,0 +1,32 @@
+// "static void main" must be defined in a public class.
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+        System.out.println(mult(11,13));
+    }
+    
+    public static int mult(int a, int b)
+    {
+        int smaller = a<b?a:b;
+        int bigger = a>b?a:b;
+        System.out.println(smaller+" "+bigger);
+        return multHelper(a,b);
+    }
+    
+    private static int multHelper(int smaller, int bigger)
+    {
+        if(smaller == 0) return 0;
+        if(smaller == 1) return bigger;
+
+        int s = smaller >> 1;
+        int halfProd = multHelper(s,bigger);
+        if(smaller%2==0)
+        {
+            return halfProd+halfProd;
+        }
+        else
+        {
+            return halfProd + halfProd + bigger;
+        }
+    }
+}
