@@ -43,17 +43,17 @@ public class Main {
     private static int KMPSearch(char[] s, char[] p)
     {
         int[] kmpTrans = matcherKMP(p);
-        int j =0, i=0, len=0;;
+        int j=0, i=0, len=0;
         while(i<s.length)
         {
+            if(j==p.length-1) return i-p.length+1; //j = kmpTrans[j-1]; to find further matches.
             if(s[i] == p[j])
             {
                 i++; j++;
             }
-            if(j==p.length) return i-p.length+1; //j = kmpTrans[j-1]; to find further matches.
             else if(i<s.length && s[i]!=p[j])
             {
-                if(len>0)
+                if(j>0)
                     j = kmpTrans[j-1];
                 else
                     i++;
