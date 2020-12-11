@@ -1,0 +1,53 @@
+/*
+
+https://youtu.be/LPFhl65R7ww
+      1        2
+A   1 3 5 | 8 9 10
+B   2 4 | 6 7 11
+
+part1 + part2 = (n+m+1)/2
+
+found:
+maxPart1A<=minPart2B
+maxPart1B<=minPart2A
+return median
+
+else if
+maxPart1A > minPart2B
+move to left
+else
+move right
+
+*/
+
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int totalLen = nums1.length + nums2.length;
+        int[] shorter = nums1.length <= nums2.length ? nums1:nums2;
+        int[] longer = nums1.length > nums2.length ? nums1:nums2;
+        
+        int i=0; int j=shorter.length;
+        
+        while(i<=j)
+        {
+            int part1 = (i+j)/2;
+            int part2 = (totalLen+1)/2 - part1;
+            
+            int maxPart1A= part1==0?Integer.MIN_VALUE:shorter[part1-1]; 
+            int minPart2A= part1==shorter.length?Integer.MAX_VALUE:shorter[part1];
+            
+            int maxPart1B= part2==0?Integer.MIN_VALUE:longer[part2-1];
+            int minPart2B= part2==longer.length?Integer.MAX_VALUE:longer[part2];
+            //System.out.println(part1+" "+part2+"\n"+maxPart1A+" "+maxPart1B+" "+minPart2A+" "+minPart2B);
+            
+            if(maxPart1A<=minPart2B && maxPart1B<=minPart2A){
+                return totalLen%2==0 ? ((double)Math.max(maxPart1A,maxPart1B)+Math.min(minPart2A,minPart2B))/2                                         : Math.max(maxPart1A,maxPart1B);
+            }
+            else if(maxPart1A>minPart2B)
+                j=part1-1;
+            else
+                i=part1+1;
+        }
+        return -1.0;
+    }
+}
