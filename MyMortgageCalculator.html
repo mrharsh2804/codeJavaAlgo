@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mortgage Calculator</title>
+<style>
+  :root{
+    --ink:#1c2b2d;
+    --paper:#f6f3ec;
+    --line:#d8d2c4;
+    --accent:#2f6f5e;
+    --accent-soft:#e4ede9;
+    --num:#0e3b30;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Georgia",serif;
+    padding:32px 18px 60px;
+  }
+  .wrap{max-width:560px;margin:0 auto;}
+  h1{
+    font-size:1.5rem;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 4px;
+  }
+  .sub{
+    color:#6b6459;
+    font-size:0.92rem;
+    margin:0 0 28px;
+  }
+  .row{
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .row-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+    gap:12px;
+  }
+  .label{
+    font-size:0.95rem;
+  }
+  .value{
+    font-variant-numeric:tabular-nums;
+    font-weight:600;
+    color:var(--num);
+    white-space:nowrap;
+    font-family:"SF Mono","Menlo",monospace;
+    font-size:0.95rem;
+  }
+  input[type=range]{
+    width:100%;
+    -webkit-appearance:none;
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px;height:18px;
+    border-radius:50%;
+    background:var(--accent);
+    border:2px solid var(--paper);
+    box-shadow:0 0 0 1px var(--accent);
+    cursor:pointer;
+    margin-top:-7px;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:4px;border-radius:2px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--paper);
+    box-shadow:0 0 0 1px var(--accent);cursor:pointer;
+  }
+  .range-note{
+    display:flex;justify-content:space-between;
+    font-size:0.72rem;color:#9c9384;margin-top:5px;
+  }
+  .result{
+    margin-top:0;
+    margin-bottom:24px;
+    background:var(--accent-soft);
+    border-radius:10px;
+    padding:22px 22px 18px;
+  }
+  .result-main{
+    display:flex;align-items:baseline;gap:8px;margin-bottom:14px;
+  }
+  .result-main .amt{
+    font-family:"SF Mono","Menlo",monospace;
+    font-size:2.1rem;font-weight:700;color:var(--num);
+  }
+  .result-main .per{
+    color:#587a70;font-size:0.95rem;
+  }
+  .breakdown{
+    display:grid;
+    grid-template-columns:1fr auto;
+    row-gap:6px;
+    font-size:0.88rem;
+  }
+  .breakdown .k{color:#4d5f5a;}
+  .breakdown .v{
+    font-family:"SF Mono","Menlo",monospace;
+    text-align:right;color:var(--ink);
+  }
+  .breakdown .total{
+    border-top:1px solid #c6d6cf;
+    margin-top:6px;padding-top:8px;
+    font-weight:700;
+  }
+  .loan-info{
+    margin-top:10px;
+    font-size:0.8rem;
+    color:#6b6459;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mortgage Calculator</h1>
+  <p class="sub">Drag the sliders to see your estimated monthly payment.</p>
+
+  <div class="result">
+    <div class="result-main">
+      <span class="amt" id="total-monthly">$0</span>
+      <span class="per">/ month</span>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="loan-info" id="loan-info"></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Home price</span>
+      <span class="value" id="v-price">$450,000</span>
+    </div>
+    <input type="range" id="price" min="300000" max="700000" step="5000" value="450000">
+    <div class="range-note"><span>$300K</span><span>$700K</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Down payment</span>
+      <span class="value" id="v-down">5% · $22,500</span>
+    </div>
+    <input type="range" id="down" min="3.5" max="20" step="0.5" value="5">
+    <div class="range-note"><span>3.5%</span><span>20%</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Interest rate (APR)</span>
+      <span class="value" id="v-apr">7.125%</span>
+    </div>
+    <input type="range" id="apr" min="3" max="9" step="0.125" value="7.125">
+    <div class="range-note"><span>3%</span><span>9%</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Loan term</span>
+      <span class="value" id="v-term">30 years</span>
+    </div>
+    <input type="range" id="term" min="10" max="30" step="5" value="30">
+    <div class="range-note"><span>10 yr</span><span>30 yr</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">PMI (of home price / yr)</span>
+      <span class="value" id="v-pmi">0.50%</span>
+    </div>
+    <input type="range" id="pmi" min="0" max="2" step="0.05" value="0.5">
+    <div class="range-note"><span>0%</span><span>2%</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Homeowner's insurance (of price / yr)</span>
+      <span class="value" id="v-ins">0.65%</span>
+    </div>
+    <input type="range" id="ins" min="0" max="2" step="0.05" value="0.65">
+    <div class="range-note"><span>0%</span><span>2%</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">Property tax (of price / yr)</span>
+      <span class="value" id="v-tax">1.00%</span>
+    </div>
+    <input type="range" id="tax" min="0" max="3" step="0.05" value="1">
+    <div class="range-note"><span>0%</span><span>3%</span></div>
+  </div>
+
+  <div class="row">
+    <div class="row-head">
+      <span class="label">HOA (per mo)</span>
+      <span class="value" id="v-other">$70</span>
+    </div>
+    <input type="range" id="other" min="0" max="1000" step="10" value="70">
+    <div class="range-note"><span>$0</span><span>$1,000</span></div>
+  </div>
+
+  <div class="row" style="border-bottom:none;">
+    <div class="row-head">
+      <span class="label">Others (per mo)</span>
+      <span class="value" id="v-others">$0</span>
+    </div>
+    <input type="range" id="others" min="0" max="1000" step="10" value="0">
+    <div class="range-note"><span>$0</span><span>$1,000</span></div>
+  </div>
+</div>
+
+<script>
+const ids = ['price','down','apr','term','pmi','ins','tax','other','others'];
+const el = {};
+ids.forEach(id => el[id] = document.getElementById(id));
+
+const fmtUSD = n => n.toLocaleString('en-US', {style:'currency', currency:'USD', maximumFractionDigits:0});
+const fmtUSD2 = n => n.toLocaleString('en-US', {style:'currency', currency:'USD', maximumFractionDigits:2});
+
+function calc(){
+  const price = +el.price.value;
+  const downPct = +el.down.value;
+  const apr = +el.apr.value;
+  const termYears = +el.term.value;
+  const pmiPct = +el.pmi.value;
+  const insPct = +el.ins.value;
+  const taxPct = +el.tax.value;
+  const other = +el.other.value;
+  const others = +el.others.value;
+
+  const downAmt = price * downPct/100;
+  const loanAmt = price - downAmt;
+  const r = apr/100/12;
+  const n = termYears*12;
+  const principalInterest = r === 0
+    ? loanAmt/n
+    : loanAmt * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+
+  const pmiMonthly = downPct < 20 ? (price*pmiPct/100)/12 : 0;
+  const insMonthly = (price*insPct/100)/12;
+  const taxMonthly = (price*taxPct/100)/12;
+
+  const total = principalInterest + pmiMonthly + insMonthly + taxMonthly + other + others;
+
+  document.getElementById('v-price').textContent = fmtUSD(price);
+  document.getElementById('v-down').textContent = `${downPct.toFixed(1)}% · ${fmtUSD(downAmt)}`;
+  document.getElementById('v-apr').textContent = apr.toFixed(3)+'%';
+  document.getElementById('v-term').textContent = termYears+' years';
+  document.getElementById('v-pmi').textContent = pmiPct.toFixed(2)+'%';
+  document.getElementById('v-ins').textContent = insPct.toFixed(2)+'%';
+  document.getElementById('v-tax').textContent = taxPct.toFixed(2)+'%';
+  document.getElementById('v-other').textContent = fmtUSD(other);
+  document.getElementById('v-others').textContent = fmtUSD(others);
+
+  document.getElementById('total-monthly').textContent = fmtUSD2(total).replace(/\.00$/,'');
+
+  const rows = [
+    ['Principal & interest', principalInterest],
+    ['Property tax', taxMonthly],
+    ["Homeowner's insurance", insMonthly],
+  ];
+  if(pmiMonthly>0) rows.push(['PMI', pmiMonthly]);
+  if(other>0) rows.push(['HOA', other]);
+  if(others>0) rows.push(['Others', others]);
+
+  document.getElementById('breakdown').innerHTML = rows.map(([k,v]) =>
+    `<div class="k">${k}</div><div class="v">${fmtUSD(v)}</div>`
+  ).join('') + `<div class="k total">Total</div><div class="v total">${fmtUSD(total)}</div>`;
+
+  document.getElementById('loan-info').textContent =
+    `Loan amount: ${fmtUSD(loanAmt)}${downPct<20 ? ' · PMI applies below 20% down' : ''}`;
+}
+
+ids.forEach(id => el[id].addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>
